@@ -12,10 +12,22 @@ Das Skript verwendet zuerst `%WINDIR%\Microsoft.NET\Framework64\v4.0.30319`, alt
 
 `build.bat` kompiliert die Programme, startet sie jedoch nicht. Erst ein späterer App-Start fordert Administratorrechte an und kann Treiber sowie geplante Aufgaben einrichten.
 
+## Setup-EXE bauen
+
+Nach `build.bat` aus dem Projektordner ausführen:
+
+```powershell
+.\installer\build-installer.ps1
+```
+
+Ergebnis: `build\MacBreeze-2.1-Setup.exe`. Das Skript prüft das eingebettete Paket mit `/verify`, ohne die App zu installieren. Für den Installer wird .NET Framework 4.5 oder neuer benötigt.
+
 ## Projektstruktur
 
 | Pfad | Inhalt |
 |---|---|
+| `src/gui/Designs.cs` | Layouts Studio, Cockpit und Fokus, Akzentfarben |
+| `installer/Setup.cs` | Installer und Deinstaller |
 | `src/gui/App.cs` | Oberfläche, Profile, Einstellungen, Infobereich und Startaufgaben |
 | `src/gui/Smc.cs` | SMC-Zugriff über InpOut32 beziehungsweise PawnIO |
 | `src/gui/SysMon.cs`, `TrayPeek.cs` | Systemmonitor und Kurzinfo |
@@ -43,4 +55,4 @@ Der normale Build baut InpOut32 und AppleT2Smc nicht neu. Er verwendet die beige
 
 Für einen eigenen Neubau des T2-Moduls werden zusätzlich der PawnIO-kompatible Compiler und dessen Include-Dateien `pawnio.inc` und `registry.inc` benötigt. Sie gehören zum externen [PawnIO-Projekt](https://github.com/namazso/PawnIO) und dessen Werkzeugen. Dieser separate Modul-Build wurde hier nicht ausgeführt; die Identität eines selbst erzeugten Moduls mit der mitgelieferten BIN-Datei ist nicht bestätigt. Änderungen am Modul erfordern eine erneute Prüfung der Treiber- und Signaturanforderungen.
 
-Der [Prüfbericht](VERIFICATION.md) beschreibt, was für diese Version tatsächlich validiert wurde.
+Der [Prüfbericht für 2.1](VERIFICATION-2.1.md) beschreibt, was für diese Version tatsächlich validiert wurde.

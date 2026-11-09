@@ -6,9 +6,9 @@
 
 **Lüftersteuerung und Systemmonitor für Intel-Macs unter Windows (Boot Camp).**
 
-MacBreeze basiert auf [RPMac](https://github.com/golirt1/RPMAC) und ergänzt eine mehrsprachige Oberfläche, fünf Erscheinungsbilder, einen Systemmonitor und eine Kurzinfo am Symbol im Infobereich.
+MacBreeze verbindet Lüftersteuerung, Temperaturanzeigen und einen Systemmonitor. Version 2.1 ergänzt **Studio, Cockpit und Fokus** mit gespeicherter Akzentfarbe. Die fünf klassischen Looks bleiben verfügbar: **acht Looks insgesamt**.
 
-[Windows-Paket herunterladen](https://github.com/Dirtyx686/MacBreeze/releases/tag/v2.1.0) · [Installationsanleitung](docs/INSTALLATION.md) · [Screenshot-Galerie](docs/SCREENSHOTS.md) · [Selbst bauen](docs/BUILD.md)
+[Downloads: Setup-EXE und portables ZIP](https://github.com/Dirtyx686/MacBreeze/releases/tag/v2.1.0) · [Installationsanleitung](docs/INSTALLATION.md) · [Screenshot-Galerie](docs/SCREENSHOTS.md) · [Selbst bauen](docs/BUILD.md)
 
 ## Neu in 2.1
 
@@ -36,7 +36,7 @@ Die bisherigen fünf Looks bleiben zusätzlich verfügbar. Studio verwendet die 
 | Sensoren | Temperaturanzeigen nach Gruppen, rohe SMC-Schlüssel und eigene Sensornamen |
 | System | CPU, Arbeitsspeicher, Netzwerk, Systemlaufwerk, Akku und Prozesse mit hoher CPU-Last |
 | Profile | Lüftereinstellungen speichern und über die Oberfläche oder den Infobereich auswählen |
-| Anzeige | Fünf Looks, veränderbare Fenstergröße, Menüleiste oben oder links, Overlay und Kurzinfo |
+| Anzeige | Drei neue Designs plus fünf klassische Looks (acht insgesamt), gespeicherte Akzentfarbe, veränderbare Fenstergröße, Menüleiste oben oder links, Overlay und Kurzinfo |
 | Sprache | 24 auswählbare Oberflächensprachen; fehlende Übersetzungen fallen auf Englisch zurück |
 | Aufzeichnung | Messwerte als CSV protokollieren |
 | Temperaturregeln | Einstellbare Notkühlung und optionale Notabschaltung |
@@ -45,7 +45,7 @@ Diese Angaben wurden mit Quellcode und bereitgestellten Screenshots abgeglichen.
 
 ## Installation und erster Start
 
-1. Unter [Releases](https://github.com/Dirtyx686/MacBreeze/releases/tag/v2.1.0) das Paket **MacBreeze-2.1-Windows.zip** herunterladen und vollständig in einen dauerhaften Ordner entpacken.
+1. [**MacBreeze-2.1-Setup.exe**](https://github.com/Dirtyx686/MacBreeze/releases/download/v2.1.0/MacBreeze-2.1-Setup.exe) für die Installation im eigenen Windows-Benutzerkonto starten. Alternativ unter [Releases](https://github.com/Dirtyx686/MacBreeze/releases/tag/v2.1.0) das portable Paket **MacBreeze-2.1-Windows.zip** herunterladen und vollständig in einen dauerhaften Ordner entpacken.
 2. Alle Programmdateien zusammenlassen, einschließlich `MacBreeze.exe.config`, `inpout32.dll`, `AppleT2Smc.bin`, `smccore.exe` und `setup-pawnio-t2.ps1`.
 3. `MacBreeze.exe` starten und die Administratorabfrage bestätigen.
 4. Beim ersten Start legt die App eine Desktop-Verknüpfung sowie geplante Aufgaben an und aktiviert den Start bei der Windows-Anmeldung. Den Autostart kannst du unter **Einstellungen → Mit Windows starten** abschalten.
@@ -67,19 +67,21 @@ Die Desktop-Verknüpfung verwendet eine geplante Aufgabe mit erhöhten Rechten; 
 
 Einstellungen und Protokolle liegen in `%APPDATA%\MacBreeze`. Sie gehören nicht ins Repository oder in einen ungeprüften Fehlerbericht.
 
-## Fünf Looks
+## Designs und Farbauswahl
 
-| Modern dunkel | Gaming / RGB | macOS hell | macOS dunkel | Minimal |
-|---|---|---|---|---|
-| ![Modern dunkel](docs/screenshots/modern_fans.png) | ![Gaming](docs/screenshots/gaming_fans.png) | ![macOS hell](docs/screenshots/macos_fans.png) | ![macOS dunkel](docs/screenshots/macosdark_fans.png) | ![Minimal](docs/screenshots/minimal_fans.png) |
+**Studio · Cockpit · Fokus** sind die drei neuen Designs. Dazu kommen die fünf klassischen Looks Modern dunkel, Gaming / RGB, macOS hell, macOS dunkel und Minimal: **acht Auswahlmöglichkeiten insgesamt**.
 
-Die [Galerie](docs/SCREENSHOTS.md) zeigt 20 Ansichten aus den bereitgestellten Bildern. Systemansichten mit sichtbaren Prozesslisten wurden aus Datenschutzgründen nicht übernommen. Messwerte in Bildern sind Momentaufnahmen.
+Unter **Einstellungen → Look** das Layout ändern. Darunter bei **Akzentfarbe** einen Vorschlag auswählen oder einen Hexcode als `#RRGGBB` eingeben und **Übernehmen** wählen. **Designfarbe** stellt den Standard des jeweiligen Looks wieder her.
+
+![Tatsächliche Look- und Farbauswahl in MacBreeze 2.1 – simulierte UI-Sitzung](docs/screenshots/v21-studio-settings.png)
+
+Die [aktuelle Galerie](docs/SCREENSHOTS.md) zeigt die neuen nativen Oberflächen. Frühere Aufnahmen der fünf klassischen Looks stehen getrennt im [Screenshot-Archiv zu 2.0](docs/archive/SCREENSHOTS-2.0.md).
 
 ## Entwicklung
 
 Unter Windows im Projektordner `build.bat` ausführen. Das Skript kompiliert GUI und Kommandozeilenprogramm und kopiert die benötigten Laufzeitdateien und Lizenzen nach `build\`. Visual Studio wird dafür nicht benötigt; der .NET-Framework-Compiler und die WPF-Bibliotheken müssen installiert sein.
 
-Weitere Informationen: [Build und Projektstruktur](docs/BUILD.md), [Änderungen](CHANGELOG.md), [Prüfumfang zur Version 2.0](docs/VERIFICATION.md).
+Weitere Informationen: [Build und Projektstruktur](docs/BUILD.md), [Änderungen](CHANGELOG.md), [Prüfumfang zur Version 2.1](docs/VERIFICATION-2.1.md).
 
 ## Lizenz und Herkunft
 

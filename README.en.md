@@ -6,9 +6,9 @@
 
 **Fan control and system monitoring for Intel Macs running Windows (Boot Camp).**
 
-MacBreeze is based on [RPMac](https://github.com/golirt1/RPMAC) and adds a multilingual interface, five visual styles, a system monitor, and a quick information panel for the system tray icon.
+MacBreeze combines fan control, temperature monitoring, and a system monitor. Version 2.1 adds **Studio, Cockpit, and Focus**, with a saved accent-color choice. The five classic styles remain available: **eight styles in total**.
 
-[Download the Windows package](https://github.com/Dirtyx686/MacBreeze/releases/tag/v2.1.0) · [Installation guide (German)](docs/INSTALLATION.md) · [Screenshot gallery](docs/SCREENSHOTS.md) · [Build guide (German)](docs/BUILD.md)
+[Downloads: setup EXE and portable ZIP](https://github.com/Dirtyx686/MacBreeze/releases/tag/v2.1.0) · [Installation guide (German)](docs/INSTALLATION.md) · [Screenshot gallery](docs/SCREENSHOTS.md) · [Build guide (German)](docs/BUILD.md)
 
 ## New in 2.1
 
@@ -32,7 +32,7 @@ The five previous styles remain available. Studio uses left navigation; Cockpit 
 | Sensors | Grouped temperature readings, raw SMC keys, and custom sensor names |
 | System | CPU, memory, network, system drive, battery, and processes with high CPU usage |
 | Profiles | Save fan settings and select them from the interface or system tray |
-| Display | Five visual styles, resizable window, top or left navigation, overlay, and tray information panel |
+| Display | Three new layouts plus five classic styles (eight total), saved accent color, resizable window, top or left navigation, overlay, and tray information panel |
 | Language | 24 selectable interface languages; missing translations fall back to English |
 | Recording | Log measurements to CSV |
 | Temperature rules | Configurable emergency cooling and optional emergency shutdown |
@@ -41,7 +41,7 @@ These descriptions were checked against the source code and supplied screenshots
 
 ## Installation and first launch
 
-1. Download **MacBreeze-2.1-Windows.zip** from [Releases](https://github.com/Dirtyx686/MacBreeze/releases/tag/v2.1.0) and extract the entire archive into a permanent folder.
+1. Run [**MacBreeze-2.1-Setup.exe**](https://github.com/Dirtyx686/MacBreeze/releases/download/v2.1.0/MacBreeze-2.1-Setup.exe) to install for your Windows account. Alternatively, download **MacBreeze-2.1-Windows.zip** from [Releases](https://github.com/Dirtyx686/MacBreeze/releases/tag/v2.1.0) and extract the entire archive into a permanent folder.
 2. Keep all program files together, including `MacBreeze.exe.config`, `inpout32.dll`, `AppleT2Smc.bin`, `smccore.exe`, and `setup-pawnio-t2.ps1`.
 3. Run `MacBreeze.exe` and approve the administrator prompt.
 4. On its first launch, the app creates a desktop shortcut and scheduled tasks, and enables startup at Windows sign-in. You can disable this under **Settings → Start with Windows**.
@@ -63,19 +63,21 @@ The desktop shortcut uses a scheduled task with elevated privileges; the app sti
 
 Settings and logs are stored in `%APPDATA%\MacBreeze`. Do not add them to the repository or share them in a bug report without checking their contents first.
 
-## Five visual styles
+## Styles and accent colors
 
-| Modern dark | Gaming / RGB | macOS light | macOS dark | Minimal |
-|---|---|---|---|---|
-| ![Modern dark](docs/screenshots/modern_fans.png) | ![Gaming](docs/screenshots/gaming_fans.png) | ![macOS light](docs/screenshots/macos_fans.png) | ![macOS dark](docs/screenshots/macosdark_fans.png) | ![Minimal](docs/screenshots/minimal_fans.png) |
+**Studio · Cockpit · Focus** are the three new layouts. The five classic styles are Modern dark, Gaming / RGB, macOS light, macOS dark, and Minimal: **eight choices altogether**.
 
-The [gallery](docs/SCREENSHOTS.md) contains 20 views from the supplied images. System views showing lists of running processes were excluded for privacy. Measurements in screenshots are snapshots. The supplied screenshots show the German interface.
+Open **Settings → Look** to change the layout. In the **Accent color** section, choose a preset or enter a `#RRGGBB` hex code and apply it. **Design default** restores the layout's default accent. The screenshot below shows the German interface.
+
+![Actual MacBreeze 2.1 style and accent-color selection — simulated UI session](docs/screenshots/v21-studio-settings.png)
+
+The [current gallery](docs/SCREENSHOTS.md) shows the new native layouts. Earlier pictures of the five classic styles are kept separately in the [2.0 screenshot archive](docs/archive/SCREENSHOTS-2.0.md).
 
 ## Development
 
 On Windows, run `build.bat` from the project folder. The script compiles the GUI and command-line program, then copies the required runtime files and licenses into `build\`. Visual Studio is not required; the .NET Framework compiler and WPF libraries must be installed.
 
-Further documentation is currently in German: [build instructions and project structure](docs/BUILD.md), [changes](CHANGELOG.md), and [verification scope for version 2.0](docs/VERIFICATION.md).
+Further documentation is currently in German: [build instructions and project structure](docs/BUILD.md), [changes](CHANGELOG.md), and [verification scope for version 2.1](docs/VERIFICATION-2.1.md).
 
 ## License and attribution
 

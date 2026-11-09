@@ -1,133 +1,33 @@
-# Screenshot-Galerie
+# MacBreeze 2.1 – aktuelle Oberflächen
 
-Ausgewählte Originalbilder aus dem bereitgestellten Screenshot-Archiv. Messwerte sind Momentaufnahmen. Systemansichten mit sichtbaren Prozesslisten wurden nicht übernommen.
+Die drei neuen Designs sind **Studio**, **Cockpit** und **Fokus**. Zusätzlich sind die fünf klassischen Looks weiterhin auswählbar: **acht Looks insgesamt**. Die Akzentfarbe lässt sich unabhängig vom Look auswählen.
 
-## Modern dunkel
+Die folgenden Bilder zeigen die native App aus Version 2.1, keine Designentwürfe. Die Messwerte stammen aus einer isolierten Simulation ohne Hardwareverbindung; jedes Bild trägt einen entsprechenden Hinweis.
 
-<details><summary>Lüfter</summary>
+## Studio
 
-![Modern dunkel: Lüfter](screenshots/modern_fans.png)
+Navigation links, helle Karten und großzügige Drehzahlanzeigen.
 
-</details>
+![MacBreeze 2.1 – Studio, simulierte Messwerte](screenshots/v21-studio.png)
 
-<details><summary>Sensoren</summary>
+## Cockpit
 
-![Modern dunkel: Sensoren](screenshots/modern_sensors.png)
+Dunkle Instrumentenansicht mit seitlicher Drehzahl und kantigen Flächen.
 
-</details>
+![MacBreeze 2.1 – Cockpit, simulierte Messwerte](screenshots/v21-cockpit.png)
 
-<details><summary>Profile</summary>
+## Fokus
 
-![Modern dunkel: Profile](screenshots/modern_profiles.png)
+Kompakte Steuerung mit zentrierter Drehzahl und Reglern daneben.
 
-</details>
+![MacBreeze 2.1 – Fokus, simulierte Messwerte](screenshots/v21-focus.png)
 
-<details><summary>Einstellungen</summary>
+## Look auswählen und Farbe ändern
 
-![Modern dunkel: Einstellungen](screenshots/modern_settings.png)
+Unter **Einstellungen → Look** stehen die drei neuen und die fünf klassischen Looks. Unter **Akzentfarbe** einen Vorschlag auswählen oder einen Hexcode wie `#11776F` eingeben und **Übernehmen** wählen. **Designfarbe** setzt den Akzent auf den Standard des jeweiligen Looks zurück. Die Auswahl bleibt nach dem Neustart erhalten.
 
-</details>
+![MacBreeze 2.1 – tatsächliche Look- und Farbauswahl](screenshots/v21-studio-settings.png)
 
-## Gaming / RGB
+## Ältere Bilder
 
-<details><summary>Lüfter</summary>
-
-![Gaming / RGB: Lüfter](screenshots/gaming_fans.png)
-
-</details>
-
-<details><summary>Sensoren</summary>
-
-![Gaming / RGB: Sensoren](screenshots/gaming_sensors.png)
-
-</details>
-
-<details><summary>Profile</summary>
-
-![Gaming / RGB: Profile](screenshots/gaming_profiles.png)
-
-</details>
-
-<details><summary>Einstellungen</summary>
-
-![Gaming / RGB: Einstellungen](screenshots/gaming_settings.png)
-
-</details>
-
-## macOS hell
-
-<details><summary>Lüfter</summary>
-
-![macOS hell: Lüfter](screenshots/macos_fans.png)
-
-</details>
-
-<details><summary>Sensoren</summary>
-
-![macOS hell: Sensoren](screenshots/macos_sensors.png)
-
-</details>
-
-<details><summary>Profile</summary>
-
-![macOS hell: Profile](screenshots/macos_profiles.png)
-
-</details>
-
-<details><summary>Einstellungen</summary>
-
-![macOS hell: Einstellungen](screenshots/macos_settings.png)
-
-</details>
-
-## macOS dunkel
-
-<details><summary>Lüfter</summary>
-
-![macOS dunkel: Lüfter](screenshots/macosdark_fans.png)
-
-</details>
-
-<details><summary>Sensoren</summary>
-
-![macOS dunkel: Sensoren](screenshots/macosdark_sensors.png)
-
-</details>
-
-<details><summary>Profile</summary>
-
-![macOS dunkel: Profile](screenshots/macosdark_profiles.png)
-
-</details>
-
-<details><summary>Einstellungen</summary>
-
-![macOS dunkel: Einstellungen](screenshots/macosdark_settings.png)
-
-</details>
-
-## Minimal
-
-<details><summary>Lüfter</summary>
-
-![Minimal: Lüfter](screenshots/minimal_fans.png)
-
-</details>
-
-<details><summary>Sensoren</summary>
-
-![Minimal: Sensoren](screenshots/minimal_sensors.png)
-
-</details>
-
-<details><summary>Profile</summary>
-
-![Minimal: Profile](screenshots/minimal_profiles.png)
-
-</details>
-
-<details><summary>Einstellungen</summary>
-
-![Minimal: Einstellungen](screenshots/minimal_settings.png)
-
-</details>
+Die ursprünglichen 20 Aufnahmen der fünf klassischen Looks stehen getrennt im [Screenshot-Archiv zu Version 2.0](archive/SCREENSHOTS-2.0.md). Sie stellen nicht die neuen Designs dar.
