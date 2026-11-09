@@ -2,6 +2,8 @@
 
 # MacBreeze 2.0
 
+[Deutsch](README.md) · [English](README.en.md)
+
 **Lüftersteuerung und Systemmonitor für Intel-Macs unter Windows (Boot Camp).**
 
 MacBreeze basiert auf [RPMac](https://github.com/golirt1/RPMAC) und ergänzt eine mehrsprachige Oberfläche, fünf Erscheinungsbilder, einen Systemmonitor und eine Kurzinfo am Symbol im Infobereich.
