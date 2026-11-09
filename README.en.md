@@ -1,6 +1,6 @@
 <p align="center"><img src="resources/MacBreeze.png" width="88" alt="MacBreeze logo"></p>
 
-# MacBreeze 2.0
+# MacBreeze 2.1
 
 [Deutsch](README.md) · [English](README.en.md)
 
@@ -8,9 +8,21 @@
 
 MacBreeze is based on [RPMac](https://github.com/golirt1/RPMAC) and adds a multilingual interface, five visual styles, a system monitor, and a quick information panel for the system tray icon.
 
-[Download the Windows package](https://github.com/Dirtyx686/MacBreeze/releases/tag/v2.0.0) · [Installation guide (German)](docs/INSTALLATION.md) · [Screenshot gallery](docs/SCREENSHOTS.md) · [Build guide (German)](docs/BUILD.md)
+[Download the Windows package](https://github.com/Dirtyx686/MacBreeze/releases/tag/v2.1.0) · [Installation guide (German)](docs/INSTALLATION.md) · [Screenshot gallery](docs/SCREENSHOTS.md) · [Build guide (German)](docs/BUILD.md)
 
-![Fan view with a temperature curve and live sensor readings](docs/screenshots/modern_fans.png)
+## New in 2.1
+
+Three additional layouts: **Studio**, **Cockpit**, and **Focus**. Choose an accent preset or enter a custom hex color; the choice is saved, and accent text adjusts for contrast. Existing hardware detection is retained, with an explicit confirmation before T2 driver and test-signing changes.
+
+[Download the setup EXE](https://github.com/Dirtyx686/MacBreeze/releases/download/v2.1.0/MacBreeze-2.1-Setup.exe) · [2.1 verification (German)](docs/VERIFICATION-2.1.md)
+
+The following native UI previews use simulated readings, with no connection to real fan hardware.
+
+![Studio — simulated readings](docs/screenshots/v21-studio.png)
+![Cockpit — simulated readings](docs/screenshots/v21-cockpit.png)
+![Focus — simulated readings](docs/screenshots/v21-focus.png)
+
+The five previous styles remain available. Studio uses left navigation; Cockpit and Focus use top navigation. Navigation position remains configurable for the previous styles.
 
 ## Features
 
@@ -29,7 +41,7 @@ These descriptions were checked against the source code and supplied screenshots
 
 ## Installation and first launch
 
-1. Download **MacBreeze-2.0-Windows.zip** from [Releases](https://github.com/Dirtyx686/MacBreeze/releases/tag/v2.0.0) and extract the entire archive into a permanent folder.
+1. Download **MacBreeze-2.1-Windows.zip** from [Releases](https://github.com/Dirtyx686/MacBreeze/releases/tag/v2.1.0) and extract the entire archive into a permanent folder.
 2. Keep all program files together, including `MacBreeze.exe.config`, `inpout32.dll`, `AppleT2Smc.bin`, `smccore.exe`, and `setup-pawnio-t2.ps1`.
 3. Run `MacBreeze.exe` and approve the administrator prompt.
 4. On its first launch, the app creates a desktop shortcut and scheduled tasks, and enables startup at Windows sign-in. You can disable this under **Settings → Start with Windows**.

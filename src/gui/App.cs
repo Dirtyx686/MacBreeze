@@ -17,6 +17,8 @@ using System.Windows.Shapes;
 using System.Windows.Interop;
 using System.Runtime.InteropServices;
 
+[assembly: System.Reflection.AssemblyVersion("2.1.0.0")]
+[assembly: System.Reflection.AssemblyFileVersion("2.1.0.0")]
 namespace MacBreeze {
 
     public partial class MainWindow : Window {
@@ -27,6 +29,7 @@ namespace MacBreeze {
         internal static readonly SolidColorBrush CARD   = (SolidColorBrush)B("#27272C");
         internal static readonly SolidColorBrush TXT    = (SolidColorBrush)B("#F2F2F4");
         internal static readonly SolidColorBrush SUB    = (SolidColorBrush)B("#8E8E96");
+        internal static readonly SolidColorBrush ACCENT_TEXT = new SolidColorBrush(Colors.White);
         internal static readonly SolidColorBrush ACCENT = (SolidColorBrush)B("#0A84FF");
         internal static readonly SolidColorBrush RED    = (SolidColorBrush)B("#FF453A");
         internal static readonly SolidColorBrush CHIP   = (SolidColorBrush)B("#37373E");
@@ -37,10 +40,10 @@ namespace MacBreeze {
         internal static readonly SolidColorBrush WARN   = (SolidColorBrush)B("#FFB340"); // ámbar: temperatura alta / read-only
         internal static readonly SolidColorBrush GOOD   = (SolidColorBrush)B("#34C759"); // verde: todo bien
 
-        const string VERSION = "2.0";
+        const string VERSION = "2.1";
 
         static void SetC(SolidColorBrush b, string hex) { b.Color = (Color)ColorConverter.ConvertFromString(hex); }
-        static bool IsDark(string t) { return Look.Norm(t) != "macos"; }
+        static bool IsDark(string t) { return Look.Norm(t) != "macos" && Look.Norm(t) != "studio" && Look.Norm(t) != "focus"; }
 
         IntPtr hwnd = IntPtr.Zero;
         void SetTitleBar(bool dark) {
@@ -61,6 +64,9 @@ namespace MacBreeze {
             string[] p;
             // Orden: BG, CARD, TXT, SUB, ACCENT, RED, CHIP, BORDER, BAR, OVBG
             switch (name) {
+                case "studio": p = new[]{ "#F1F5F5","#FFFFFF","#18353B","#526C74","#11776F","#C52E45","#E4EEEE","#D4E2E4","#F9FBFB","#F2F9FBFB" }; break;
+                case "cockpit": p = new[]{ "#121A1C","#1C282B","#F1F4ED","#A5B7B5","#BC7133","#FF6B70","#2A393C","#3B4C4E","#162023","#F2162023" }; break;
+                case "focus": p = new[]{ "#F7F6FB","#FFFFFF","#302D46","#6A667C","#6257AA","#C52E45","#ECE9F6","#E1DDEB","#FCFBFE","#F2FCFBFE" }; break;
                 case "gaming":  p = new[]{ "#07070B","#101018","#F4F4FF","#8C8CA8","#FF2BD6","#FF3355","#1B1B27","#2C2C44","#0A0A10","#E607070B" }; break;
                 case "macos":   p = new[]{ "#ECECF0","#FFFFFF","#1D1D1F","#6E6E73","#007AFF","#FF3B30","#E8E8ED","#D8D8DE","#F5F5F7","#F2F5F5F7" }; break;
                 case "macosdark": p = new[]{ "#1E1E1E","#2C2C2E","#F5F5F7","#98989D","#0A84FF","#FF453A","#3A3A3C","#3D3D40","#252527","#E61E1E1E" }; break;
@@ -74,6 +80,8 @@ namespace MacBreeze {
             // resource brushes can't be mutated like the ones above — instead we swap in fresh brushes
             // here, which makes every DynamicResource re-resolve to the new color. (The brushes above
             // stay mutable precisely because they are NOT registered as resources.)
+            ApplyAccent();
+            FontFamily = new FontFamily(Look.Font);
             SetThemeResources();
             SetTitleBar(IsDark(name));
         }
@@ -359,7 +367,7 @@ namespace MacBreeze {
 
         public MainWindow() {
             Title = "MacBreeze";
-            Width = 980; Height = 640;
+            Width = 1320; Height = 820;
             MinWidth = 820; MinHeight = 500;
             ResizeMode = ResizeMode.CanResize;     // frei veränderbar (Rand ziehen, maximieren, Snap)
             WindowStyle = WindowStyle.None;        // barra de título propia (ver BuildTitleBar)
@@ -421,12 +429,12 @@ namespace MacBreeze {
             // Rail de navegación a la izquierda + área de páginas a la derecha.
             // Menüleiste links (Standard) oder oben – Einstellung "Menüleiste".
             var main = new Grid();
-            bool navTop = Settings.NavTop;
+            bool navTop = DesignNavTop;
             if (navTop) {
                 main.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
                 main.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             } else {
-                main.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(74) });
+                main.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(Look.Key == "studio" ? 188 : 74) });
                 main.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             }
             root.Children.Add(main);
@@ -465,7 +473,9 @@ namespace MacBreeze {
                 string fixScript = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(
                     System.Reflection.Assembly.GetExecutingAssembly().Location), "setup-pawnio-t2.ps1");
                 if (Smc.MmioError.Length > 0 && System.IO.File.Exists(fixScript)) {
-                    var fix = Chip(I18n.T("Fix automatically (install PawnIO for T2)"), ACCENT, Brushes.White, delegate {
+                    var fix = Chip(I18n.T("Fix automatically (install PawnIO for T2)"), ACCENT, ACCENT_TEXT, delegate {
+                        string question = Settings.Language == "de" ? "T2-Treiber einrichten?\n\nDer Helfer installiert PawnIO 2.0.1 unrestricted, kann vorhandene PawnIO-Treiber entfernen und aktiviert die Windows-Testsignatur. Das senkt Sicherheitsbeschränkungen. Anschließend ist ein Neustart erforderlich.\n\nJetzt fortfahren?" : "Set up the T2 driver?\n\nThe helper installs PawnIO 2.0.1 unrestricted, may remove existing PawnIO drivers and enables Windows test signing. This reduces security restrictions. A restart is required.\n\nContinue?";
+                        if (MessageBox.Show(this, question, "MacBreeze 2.1", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No) != MessageBoxResult.Yes) return;
                         try {
                             // RPMac es x86: "powershell.exe" seria el de SysWOW64, sin bcdedit ni pnputil.
                             string ps = System.IO.Path.Combine(Environment.GetEnvironmentVariable("windir"), @"Sysnative\WindowsPowerShell\v1.0\powershell.exe");
@@ -483,10 +493,12 @@ namespace MacBreeze {
                 stack.Children.Add(Card(warn));
             }
 
+            AddDesignHeading(fansPage);
             BuildFans(stack);
             BuildHistoryCard(stack);
             liveTempsHost = liveCol;
             BuildLiveTemps(liveCol);
+            ConfigureDesignLayout(fansGrid, stack, liveCol);
 
             sensorsPage = NewPage("sensors");
             BuildTempsPane(sensorsPage);
@@ -770,7 +782,7 @@ namespace MacBreeze {
 
         // ---- Rail de navegación ---------------------------------------------------
         UIElement BuildNavRail() {
-            bool top = Settings.NavTop;
+            bool top = DesignNavTop;
             var panel = new StackPanel { Background = BAR, Orientation = top ? Orientation.Horizontal : Orientation.Vertical, Margin = top ? new Thickness(8, 0, 8, 6) : new Thickness(0) };
             var dock = new DockPanel { Background = BAR, LastChildFill = true };
             var lang = LanguageCombo(true);
@@ -810,19 +822,19 @@ namespace MacBreeze {
 
         Border NavButton(string key, string label, string[] iconData) {
             var it = new NavItem();
-            bool top = Settings.NavTop;
-            var col = new StackPanel { HorizontalAlignment = HorizontalAlignment.Center, Orientation = top ? Orientation.Horizontal : Orientation.Vertical };
+            bool top = DesignNavTop;
+            var col = new StackPanel { HorizontalAlignment = HorizontalAlignment.Center, Orientation = top || Look.Key == "studio" ? Orientation.Horizontal : Orientation.Vertical };
             var icon = iconData == null ? FanGlyph(21, it.Shapes) : StrokeIcon(21, iconData, it.Shapes);
             if (top && icon is FrameworkElement) ((FrameworkElement)icon).VerticalAlignment = VerticalAlignment.Center;
             col.Children.Add(icon);
-            it.Label = new TextBlock { Text = label, FontSize = top ? 12.5 : 9.5, FontWeight = top ? FontWeights.SemiBold : FontWeights.Normal, Foreground = SUB,
+            it.Label = new TextBlock { Text = label, FontSize = top || Look.Key == "studio" ? 12.5 : 9.5, FontWeight = top ? FontWeights.SemiBold : FontWeights.Normal, Foreground = SUB,
                 HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center,
-                Margin = top ? new Thickness(8, 0, 0, 0) : new Thickness(0, 5, 0, 0) };
+                Margin = top || Look.Key == "studio" ? new Thickness(8, 0, 0, 0) : new Thickness(0, 5, 0, 0) };
             col.Children.Add(it.Label);
 
             it.Box = new Border {
                 Margin = top ? new Thickness(0, 6, 6, 0) : new Thickness(8, 8, 8, 0),
-                Padding = top ? new Thickness(14, 7, 16, 7) : new Thickness(0, 10, 0, 9),
+                Padding = top || Look.Key == "studio" ? new Thickness(14, 12, 16, 12) : new Thickness(0, 10, 0, 9),
                 CornerRadius = Look.CR(10), Background = Brushes.Transparent,
                 Cursor = Cursors.Hand, Child = col
             };
@@ -850,8 +862,8 @@ namespace MacBreeze {
             foreach (var kv in navItems) {
                 bool sel = (kv.Key == key);
                 kv.Value.Box.Background = sel ? ACCENT : Brushes.Transparent;
-                kv.Value.Label.Foreground = sel ? Brushes.White : SUB;
-                Recolor(kv.Value.Shapes, sel ? Brushes.White : SUB);
+                kv.Value.Label.Foreground = sel ? ACCENT_TEXT : SUB;
+                Recolor(kv.Value.Shapes, sel ? ACCENT_TEXT : SUB);
             }
         }
 
@@ -902,7 +914,7 @@ namespace MacBreeze {
             if (chip == null) return;
             chip.Background = active ? activeBg : ("seg".Equals(chip.Tag) ? Brushes.Transparent : (Brush)CHIP);
             var tb = chip.Child as TextBlock;
-            if (tb != null) tb.Foreground = active ? Brushes.White : TXT;
+            if (tb != null) tb.Foreground = active ? ACCENT_TEXT : TXT;
         }
 
         void SetMode(FanUi f, string mode) {
@@ -1444,6 +1456,7 @@ namespace MacBreeze {
         void BuildFans(Panel parent) {
             // Sensors offered in the curve dropdown: curated keys present with a plausible
             // reading (same criterion as the Temperatures card).
+            Panel fanHost = CreateDesignFanHost(parent);
             var availSensors = new List<string[]>();
             foreach (var c in SENSORS) {
                 double v = Smc.ReadTemp(c[0]);
@@ -1539,7 +1552,7 @@ namespace MacBreeze {
                 var manualRow = new StackPanel { Orientation = Orientation.Horizontal };
                 double mn = double.IsNaN(fi.Min) ? 0 : fi.Min;
                 double tg = double.IsNaN(fi.Target) ? mn : fi.Target;
-                f.Slider = new Slider { Minimum = mn, Maximum = f.Max, Value = tg, Width = 390, IsEnabled = false, VerticalAlignment = VerticalAlignment.Center };
+                f.Slider = new Slider { Minimum = mn, Maximum = f.Max, Value = tg, Width = Look.Key == "focus" ? 270 : 390, IsEnabled = false, VerticalAlignment = VerticalAlignment.Center };
                 f.SliderVal = new TextBlock { Text = ((int)tg) + " RPM", Foreground = TXT, Width = 80, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(12, 0, 0, 0), FontWeight = FontWeights.SemiBold };
                 f.Slider.ValueChanged += delegate { f.SliderVal.Text = ((int)f.Slider.Value) + " RPM"; };
                 manualRow.Children.Add(f.Slider);
@@ -1547,7 +1560,7 @@ namespace MacBreeze {
                 col.Children.Add(manualRow);
                 f.ManualRow = manualRow;
 
-                var apply = Chip(I18n.T("Apply RPM"), ACCENT, Brushes.White, delegate { if (!Guard()) return; Smc.SetFanRpm(f.Index, f.Slider.Value); SetMode(f, "manual"); Settings.SetFan(f.Index, "manual", (int)f.Slider.Value); ClearActivePreset(); });
+                var apply = Chip(I18n.T("Apply RPM"), ACCENT, ACCENT_TEXT, delegate { if (!Guard()) return; Smc.SetFanRpm(f.Index, f.Slider.Value); SetMode(f, "manual"); Settings.SetFan(f.Index, "manual", (int)f.Slider.Value); ClearActivePreset(); });
                 apply.Margin = new Thickness(0, 12, 0, 0);
                 apply.HorizontalAlignment = HorizontalAlignment.Left;
                 col.Children.Add(apply);
@@ -1571,13 +1584,14 @@ namespace MacBreeze {
                     f.Pts.Add(new CurvePt(40, f.Min));
                     f.Pts.Add(new CurvePt(80, f.Max));
                     f.SyncFlat();
-                    cv.Children.Add(BuildCurveCanvas(f));
+                    var curveContent = BuildCurveCanvas(f);
+                    cv.Children.Add(new Viewbox { Stretch = Stretch.Uniform, StretchDirection = StretchDirection.DownOnly, HorizontalAlignment = HorizontalAlignment.Left, Child = curveContent });
                     f.CurveRow = cv;
                     col.Children.Add(cv);
 
                     var fc = f;
                     var applyRow = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 10, 0, 0), HorizontalAlignment = HorizontalAlignment.Left };
-                    var curveApply = Chip(I18n.T("Apply curve"), ACCENT, Brushes.White, delegate { if (!Guard()) return; ApplyCurveFromUi(fc); });
+                    var curveApply = Chip(I18n.T("Apply curve"), ACCENT, ACCENT_TEXT, delegate { if (!Guard()) return; ApplyCurveFromUi(fc); });
                     f.CurveApply = curveApply;
                     applyRow.Children.Add(curveApply);
                     // Con varios ventiladores, copiar esta curva a todos ahorra repetir el
@@ -1603,7 +1617,7 @@ namespace MacBreeze {
 
                 SetMode(f, fi.Forced ? "manual" : "auto");
                 fans.Add(f);
-                parent.Children.Add(Card(col));
+                AddDesignFan(fanHost, col, head, rpmRow, f);
             }
         }
 
@@ -1823,7 +1837,7 @@ namespace MacBreeze {
             row.Children.Add(customKeyCombo);
             customNameBox = new TextBox { Width = 230, Margin = new Thickness(10, 0, 0, 0), VerticalAlignment = VerticalAlignment.Center, ToolTip = I18n.T("The name you want to see, e.g. “Northbridge”") };
             row.Children.Add(customNameBox);
-            var add = Chip(I18n.T("Add"), ACCENT, Brushes.White, delegate { AddCustomSensor(); });
+            var add = Chip(I18n.T("Add"), ACCENT, ACCENT_TEXT, delegate { AddCustomSensor(); });
             add.Margin = new Thickness(10, 0, 0, 0);
             row.Children.Add(add);
             col.Children.Add(row);
@@ -1995,6 +2009,9 @@ namespace MacBreeze {
 
         // Look-Auswahl: vier Kacheln mit Mini-Vorschau (Hintergrund, Karte, Akzent).
         static readonly string[][] LOOK_PREVIEW = new string[][] {
+            new[]{ "#F1F5F5", "#FFFFFF", "#11776F" },
+            new[]{ "#121A1C", "#1C282B", "#BC7133" },
+            new[]{ "#F7F6FB", "#FFFFFF", "#6257AA" },
             new[]{ "#0D1220", "#161E30", "#1EC8E8" },
             new[]{ "#07070B", "#101018", "#FF2BD6" },
             new[]{ "#ECECF0", "#FFFFFF", "#007AFF" },
@@ -2036,6 +2053,7 @@ namespace MacBreeze {
             }
             col.Children.Add(wrap);
             SelectThemeChips();
+            BuildAccentPicker(col);
 
             // Menüleiste links oder oben
             col.Children.Add(new TextBlock { Text = I18n.T("Menu bar"), Foreground = TXT, FontSize = 13, FontWeight = FontWeights.SemiBold, Margin = new Thickness(0, 10, 0, 2) });
@@ -2043,7 +2061,7 @@ namespace MacBreeze {
             var navRow = new WrapPanel { Orientation = Orientation.Horizontal };
             foreach (var opt in new[] { new object[] { false, I18n.T("Left") }, new object[] { true, I18n.T("Top") } }) {
                 bool val = (bool)opt[0]; bool sel = (Settings.NavTop == val);
-                var chip = Chip((string)opt[1], sel ? ACCENT : CHIP, sel ? Brushes.White : TXT, delegate {
+                var chip = Chip((string)opt[1], sel ? ACCENT : CHIP, sel ? ACCENT_TEXT : TXT, delegate {
                     if (Settings.NavTop == val) return;
                     Settings.NavTop = val; Settings.Save();
                     try { System.Diagnostics.Process.Start(System.Reflection.Assembly.GetExecutingAssembly().Location, App.RELAUNCH_ARG); } catch { }
@@ -2387,8 +2405,8 @@ namespace MacBreeze {
             var hbd = new Border { CornerRadius = Look.CR(9), Padding = new Thickness(15, 8, 15, 8), Margin = new Thickness(0, 0, 8, 8), Cursor = Cursors.Hand, Child = htb };
             Action paintOrient = delegate {
                 bool h = Settings.OverlayHorizontal;
-                vbd.Background = h ? CHIP : ACCENT; vtb.Foreground = h ? TXT : Brushes.White;
-                hbd.Background = h ? ACCENT : CHIP; htb.Foreground = h ? Brushes.White : TXT;
+                vbd.Background = h ? CHIP : ACCENT; vtb.Foreground = h ? TXT : ACCENT_TEXT;
+                hbd.Background = h ? ACCENT : CHIP; htb.Foreground = h ? ACCENT_TEXT : TXT;
             };
             // Erst Einstellung + Knöpfe, dann das Overlay: ein Fehler dort darf den Wechsel nicht verhindern.
             Action<bool> setOrient = delegate (bool h) {
@@ -2426,7 +2444,7 @@ namespace MacBreeze {
         Border MakeOverlayChip(string key, string label) {
             var tb = new TextBlock { Text = label, FontSize = 13, FontWeight = FontWeights.SemiBold };
             var bd = new Border { CornerRadius = Look.CR(9), Padding = new Thickness(13, 7, 13, 7), Margin = new Thickness(0, 0, 8, 8), Cursor = Cursors.Hand, Child = tb };
-            Action paint = delegate { bool on = OverlaySel(key); bd.Background = on ? ACCENT : CHIP; tb.Foreground = on ? Brushes.White : TXT; };
+            Action paint = delegate { bool on = OverlaySel(key); bd.Background = on ? ACCENT : CHIP; tb.Foreground = on ? ACCENT_TEXT : TXT; };
             bd.MouseLeftButtonUp += delegate {
                 if (Settings.OverlayItems == null) {
                     Settings.OverlayItems = new HashSet<string>();
@@ -2845,7 +2863,7 @@ namespace MacBreeze {
             nameHost.Children.Add(presetNameBox);
             nameHost.Children.Add(presetPlaceholder);
 
-            var saveBtn = Chip(I18n.T("Save"), ACCENT, Brushes.White, delegate { if (!Guard()) return; SaveCurrentAsPreset(presetNameBox.Text); });
+            var saveBtn = Chip(I18n.T("Save"), ACCENT, ACCENT_TEXT, delegate { if (!Guard()) return; SaveCurrentAsPreset(presetNameBox.Text); });
             saveBtn.Margin = new Thickness(10, 0, 0, 0);
             saveRow.Children.Add(nameHost);
             saveRow.Children.Add(saveBtn);
@@ -2930,7 +2948,7 @@ namespace MacBreeze {
             var applyBtn = new Border {
                 Background = active ? ACCENT : BG, CornerRadius = Look.CR(7),
                 Padding = new Thickness(14, 7, 14, 7), Cursor = Cursors.Hand,
-                Child = new TextBlock { Text = active ? I18n.T("Active") : I18n.T("Apply"), Foreground = active ? Brushes.White : TXT, FontSize = 12.5, FontWeight = FontWeights.SemiBold }
+                Child = new TextBlock { Text = active ? I18n.T("Active") : I18n.T("Apply"), Foreground = active ? ACCENT_TEXT : TXT, FontSize = 12.5, FontWeight = FontWeights.SemiBold }
             };
             applyBtn.MouseEnter += delegate { applyBtn.Opacity = 0.82; };
             applyBtn.MouseLeave += delegate { applyBtn.Opacity = 1.0; };
@@ -3457,7 +3475,8 @@ namespace MacBreeze {
         public static bool Overlay = false;
         public static bool OverlayHorizontal = false;
         public static HashSet<string> OverlayItems = null; // null = mostrar todo
-        public static string Theme = "dark";
+        public static string Theme = "studio";
+        public static string Accent = "";
         public static string TrayMode = "icon";  // "icon", "none", "highest", or a sensor key
         public static string Language = I18n.DetectWindowsLanguage();   // beim ersten Start: Windows-Sprache
         // Suaviza la curva: ignora cambios pequeños y baja despacio, para que el ventilador
@@ -3493,6 +3512,7 @@ namespace MacBreeze {
                     else if (s.Length >= 2 && s[0] == "ovorient") OverlayHorizontal = (s[1] == "h");
                     else if (s.Length >= 2 && s[0] == "ovsel") OverlayItems = new HashSet<string>(s[1].Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries));
                     else if (s.Length >= 2 && s[0] == "theme") Theme = s[1];
+                    else if (s.Length >= 2 && s[0] == "accent") Accent = s[1];
                     else if (s.Length >= 2 && s[0] == "navtop") NavTop = (s[1] == "1");
                     else if (s.Length >= 6 && s[0] == "win") {
                         var ic = System.Globalization.CultureInfo.InvariantCulture; double d;
@@ -3554,6 +3574,7 @@ namespace MacBreeze {
                 lines.Add("ovorient|" + (OverlayHorizontal ? "h" : "v"));
                 if (OverlayItems != null) lines.Add("ovsel|" + string.Join(",", new List<string>(OverlayItems).ToArray()));
                 lines.Add("theme|" + Theme);
+                lines.Add("accent|" + Accent);
                 var ic = System.Globalization.CultureInfo.InvariantCulture;
                 lines.Add("navtop|" + (NavTop ? "1" : "0"));
                 if (WinW > 0) lines.Add("win|" + WinW.ToString(ic) + "|" + WinH.ToString(ic) + "|" + WinL.ToString(ic) + "|" + WinT.ToString(ic) + "|" + (WinMax ? "1" : "0"));
@@ -3601,21 +3622,24 @@ namespace MacBreeze {
         public static string Font = "Segoe UI";
         public static double NumberSize = 34;
 
-        public static readonly string[] Keys   = { "modern", "gaming", "macos", "macosdark", "minimal" };
-        public static readonly string[] Labels = { "Modern dark", "Gaming / RGB", "macOS light", "macOS dark", "Minimal" };
+        public static readonly string[] Keys   = { "studio", "cockpit", "focus", "modern", "gaming", "macos", "macosdark", "minimal" };
+        public static readonly string[] Labels = { "Studio", "Cockpit", "Fokus", "Modern dark", "Gaming / RGB", "macOS light", "macOS dark", "Minimal" };
 
         // alte RPMac-Themes auf die neuen Looks abbilden
         public static string Norm(string t) {
             switch (t) {
-                case "gaming": case "macos": case "macosdark": case "minimal": case "modern": return t;
+                case "studio": case "cockpit": case "focus": case "gaming": case "macos": case "macosdark": case "minimal": case "modern": return t;
                 case "light": case "japan": return "macos";
-                default: return "modern";
+                default: return "studio";
             }
         }
 
         public static void Set(string key) {
             Key = Norm(key);
             switch (Key) {
+                case "studio": R = 1.5; Shadow = false; Glow = false; Gauge = false; Flat = false; Font = "Segoe UI"; NumberSize = 42; break;
+                case "cockpit": R = 0.3; Shadow = false; Glow = false; Gauge = false; Flat = true; Font = "Bahnschrift, Segoe UI"; NumberSize = 48; break;
+                case "focus": R = 1.8; Shadow = false; Glow = false; Gauge = false; Flat = false; Font = "Segoe UI"; NumberSize = 52; break;
                 case "gaming":
                     R = 0.55; Shadow = false; Glow = true; Gauge = true; Flat = false;
                     Font = "Bahnschrift, Segoe UI"; NumberSize = 36; break;

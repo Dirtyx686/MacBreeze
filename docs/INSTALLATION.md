@@ -1,8 +1,16 @@
 # Installation und Nutzung
 
+## Setup-EXE
+
+`MacBreeze-2.1-Setup.exe` installiert für das aktuelle Benutzerkonto nach `%LOCALAPPDATA%\Programs\MacBreeze` und legt einen Startmenüeintrag an. Eine vorhandene MacBreeze-Instanz vorher beenden. Die Setup-EXE installiert keine Treiber und verändert die Startsicherheit nicht. Die App benötigt beim ersten Start weiterhin Administratorrechte.
+
+Die App verwendet ihre vorhandene Hardwareerkennung. Wenn der T2-Helfer benötigt wird, wird die Einrichtung in der Oberfläche angeboten. Vor dem Start des Helfers erscheint zusätzlich eine Ja/Nein-Abfrage mit den geplanten Systemänderungen. Eine Hardwareerkennung ist keine Garantie der Kompatibilität jedes Modells.
+
+Die Setup-EXE registriert einen Deinstallationseintrag. Der Deinstaller entfernt die ausgelieferten Programmdateien und den Startmenüeintrag. Einstellungen, geplante Aufgaben, PawnIO und Testsignatur bleiben erhalten; hierfür gelten die nachstehenden Hinweise. `Uninstall.exe` bleibt nach dem Entfernen als letzte Datei und kann anschließend manuell gelöscht werden.
+
 ## Windows-Paket
 
-Das Paket im [Release v2.0.0](https://github.com/Dirtyx686/MacBreeze/releases/tag/v2.0.0) vollständig entpacken. Das Repository enthält den Quellcode; das Windows-ZIP enthält die fertigen Programme.
+Das Paket im [Release v2.1.0](https://github.com/Dirtyx686/MacBreeze/releases/tag/v2.1.0) vollständig entpacken. Das Repository enthält den Quellcode; das Windows-ZIP enthält die fertigen Programme.
 
 Alle Laufzeitdateien zusammen in einem dauerhaften Ordner lassen. Die App braucht beim ersten Start Administratorrechte und richtet die Aufgaben `MacBreeze` (Autostart) und `MacBreeze-Start` (erhöhter Start über die Desktop-Verknüpfung) ein. Beim ersten Start wird der Autostart aktiviert. Unter **Einstellungen → Mit Windows starten** lässt er sich ausschalten.
 

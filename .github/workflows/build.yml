@@ -19,3 +19,6 @@ jobs:
       - name: GUI und Kommandozeilenprogramm kompilieren
         shell: cmd
         run: build.bat
+      - name: Setup bauen und eingebettetes Paket prüfen
+        shell: powershell
+        run: .\installer\build-installer.ps1

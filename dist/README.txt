@@ -1,4 +1,11 @@
-MacBreeze 2.0 - Windows / Boot Camp
+Neue Version 2.1: Studio, Cockpit und Fokus unter Einstellungen > Look.
+Akzentfarbe: Vorschlag wählen oder #RRGGBB eingeben, dann Übernehmen.
+
+Setup: MacBreeze-2.1-Setup.exe installiert für das aktuelle Benutzerkonto.
+Die vorhandene Hardwareerkennung bietet bei Bedarf die T2-Einrichtung an.
+Vor Treiber- und Testsignaturänderungen erscheint eine Ja/Nein-Abfrage.
+
+MacBreeze 2.1 - Windows / Boot Camp
 ==================================
 
 Lueftersteuerung und Systemmonitor fuer Intel-Macs unter Windows.
@@ -21,7 +28,7 @@ und erfordert einen Neustart. Vorher die vollstaendige Anleitung lesen.
 
 Anleitung, Quellcode und Lizenzhinweise:
 https://github.com/Dirtyx686/MacBreeze
-https://github.com/Dirtyx686/MacBreeze/blob/v2.0.0/docs/INSTALLATION.md
+https://github.com/Dirtyx686/MacBreeze/blob/v2.1.0/docs/INSTALLATION.md
 
 Hauptprogramm: GPL-2.0-only (LICENSE.txt und NOTICE.txt).
 InpOut32: MIT (LICENSE-InpOut32.txt).

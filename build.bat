@@ -30,7 +30,7 @@ echo MacBreeze wird kompiliert ...
   /reference:"%FW%\WPF\PresentationFramework.dll" ^
   /reference:"%FW%\System.Windows.Forms.dll" ^
   /reference:"%FW%\System.Drawing.dll" ^
-  "%ROOT%src\gui\Smc.cs" "%ROOT%src\gui\I18n.cs" "%ROOT%src\gui\I18n.Langs.cs" "%ROOT%src\gui\App.cs" "%ROOT%src\gui\SysMon.cs" "%ROOT%src\gui\TrayPeek.cs"
+  "%ROOT%src\gui\Smc.cs" "%ROOT%src\gui\I18n.cs" "%ROOT%src\gui\I18n.Langs.cs" "%ROOT%src\gui\App.cs" "%ROOT%src\gui\SysMon.cs" "%ROOT%src\gui\TrayPeek.cs" "%ROOT%src\gui\Designs.cs"
 
 if errorlevel 1 (
   echo.

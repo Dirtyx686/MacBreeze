@@ -1,5 +1,15 @@
 # Änderungen
 
+## MacBreeze 2.1 — 10. November 2026
+
+- Drei zusätzliche Layouts: Studio, Cockpit und Fokus.
+- Gespeicherte Akzentfarbe mit Vorschlägen, Hex-Eingabe und Rücksetzen.
+- Lesbare Schriftfarbe auf benutzerdefinierten Akzentflächen.
+- Zusätzliche Bestätigung vor der vorhandenen T2-Einrichtung.
+- Setup-EXE für das aktuelle Benutzerkonto und Deinstaller.
+- Version 2.0 bleibt als Archiv und Release v2.0.0 erhalten.
+
+
 ## MacBreeze 2.0
 
 Erste veröffentlichte Version von MacBreeze, entstanden aus RPMac 1.10.1.
