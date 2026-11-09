@@ -1,0 +1,32 @@
+# Eigene Build-Ausgaben und lokale Pakete
+/build/
+*.exe
+*.zip
+*.7z
+*.log
+*.pdb
+*.tmp
+*.bak
+
+# Geheimnisse und lokale Einstellungen
+.env
+.env.*
+!.env.example
+*.key
+*.pfx
+*.p12
+*.pem
+*.user
+*.suo
+*.scc
+*.vspscc
+*.vssscc
+.vs/
+.idea/
+__pycache__/
+*.pyc
+/BUILD-MIT-LOG.bat
+/build-log.txt
+
+# Die enthaltenen nativen Drittanbieter-Bibliotheken und
+# dist/AppleT2Smc.bin sind bewusste Build-Eingaben.

@@ -1,0 +1,340 @@
+## RPMac v1.10.1
+
+**The other app capable of controlling fans on Intel Macs in Windows — for free.**
+
+### Fixed
+
+- **Picking a language could make RPMac look as if it had closed.** With *Start minimized to tray* turned on, switching between English and Italian restarted RPMac straight into the tray, so the window just disappeared. It now comes back on screen. *Start minimized* still applies when RPMac starts with Windows, and a restart after the SMC recovers still stays in the tray if that is where the window was.
+
+Everything from 1.10.0 is included: the Italian interface, recovery from an SMC left stuck by another program, and the installer script.
+
+### Download
+Download `RPMac-v1.10.1-windows.zip` below, unzip it, and run **`RPMac.exe` as administrator**.
+Keep `RPMac.exe`, `RPMac.exe.config`, `smccore.exe` and `inpout32.dll` together in the same folder.
+
+> **If Windows blocks it:** RPMac isn't code-signed, so Windows doesn't recognise it yet. On **SmartScreen** choose *More info → Run anyway*; if **Smart App Control** blocks it the app just won't start, so either turn Smart App Control off in *Windows Security → App & browser control*, or build RPMac yourself from source. Some antivirus tools also flag the bundled **InpOut32** driver, which is what talks to the SMC — normal for any fan-control utility. The full source is in this repo.
+
+Read-only and safe on non-Apple hardware. License: GPL-2.0-only.
+
+---
+
+## RPMac v1.10.0
+
+**The other app capable of controlling fans on Intel Macs in Windows — for free.**
+
+### RPMac now speaks Italian
+
+Settings has a new **Language** selector: **English** or **Italiano**. The whole interface is translated — the four pages, fan modes, the curve editor, presets, the tray menu, the overlay, sensor names and the emergency messages. Picking a language restarts RPMac to apply it, and the choice is remembered. English stays the default, so nothing changes unless you switch. Contributed by @Michel-IT.
+
+The translations live in a single source file with no extra dependencies, so another language is one more dictionary and one more button. If you'd like RPMac in yours, pull requests are welcome.
+
+### Fixed
+
+- **RPMac recovers from an SMC that another program left stuck.** Another app talking to the SMC through Boot Camp's driver can leave it refusing every command until it is reset. RPMac used to handle that badly: started while the SMC was stuck, it stayed read-only even after the SMC came back; it burned CPU retrying against the dead SMC; and the status bar still said "Driver OK". Now it backs off instead of hammering the SMC, says "SMC not responding" in the status bar, re-checks every ~10 seconds, and unlocks itself (restarting quietly) once the SMC answers. If the SMC gets stuck while RPMac is already running, your fan settings are reapplied when it comes back. The re-checking only happens on a Mac; on any other PC RPMac still checks once at launch and then leaves the hardware alone. Contributed by @VladislavEkimtcov.
+
+### New
+
+- **Two more Macs confirmed working:** a Mac mini Late 2014 (`Macmini7,1`) and a 13-inch MacBook Pro Late 2016 (`MacBookPro13,2`). Thanks to @heni0xyz and @MasterWolff for the reports.
+- **An installer script.** `installer/rpmac-setup.iss` builds an [Inno Setup](https://jrsoftware.org/isinfo.php) installer that starts RPMac with Windows and adds `smccore.exe` to PATH, for those who'd rather have it installed than portable. Contributed by @matthewyang204.
+
+### Download
+Download `RPMac-v1.10.0-windows.zip` below, unzip it, and run **`RPMac.exe` as administrator**.
+Keep `RPMac.exe`, `RPMac.exe.config`, `smccore.exe` and `inpout32.dll` together in the same folder.
+
+> **If Windows blocks it:** RPMac isn't code-signed, so Windows doesn't recognise it yet. On **SmartScreen** choose *More info → Run anyway*; if **Smart App Control** blocks it the app just won't start, so either turn Smart App Control off in *Windows Security → App & browser control*, or build RPMac yourself from source. Some antivirus tools also flag the bundled **InpOut32** driver, which is what talks to the SMC — normal for any fan-control utility. The full source is in this repo.
+
+Read-only and safe on non-Apple hardware. License: GPL-2.0-only.
+
+---
+
+## RPMac v1.9.0
+
+**The other app capable of controlling fans on Intel Macs in Windows — for free.**
+
+### T2 Macs (2018-2020) now work
+
+RPMac reaches the T2's SMC through a kernel module for [PawnIO](https://pawnio.eu), and it has now been confirmed on real hardware — a **MacBook Pro 15-inch 2018** and a **MacBook Pro 16-inch 2019**: sensors, Auto / Max / Manual RPM and temperature curves all work. Thanks to @Kinkaliyov and @matthewyang204, who did the testing.
+
+One caveat while you wait for the module to be signed: it has to be loaded by PawnIO's **unrestricted** edition, and the "unrestricted" option in the PawnIO 2.1.0 and 2.2.0 installers ships a driver that still enforces signatures ([PawnIO.Setup#11](https://github.com/namazso/PawnIO.Setup/issues/11)) — **2.0.1** works. Once [the module is signed](https://github.com/namazso/PawnIO.Modules/pull/71) none of this setup will be needed.
+
+### Fixed
+
+- **The curve reacted late under heavy load, letting temperatures overshoot.** "Start with Windows" registered RPMac as a scheduled task, and Windows defaults those to *below normal* priority — so the control loop was starved exactly when the fan curve needed to act. On top of that, the UI repaint was blocking the loop. Measured on a Mac Pro with every core at 100%, the control cycle ran 2–12 seconds and now holds a steady 2. Existing "start with Windows" tasks repair themselves the next time RPMac starts. Reported by @blissman.
+- **Fan RPM read as nonsense on T2 Macs** (values like `565588` or `-2147483648`, and a `0-0 RPM` range). T2 fan keys are IEEE floats and were being byte-reversed; the value written for a manual setpoint was wrong for the same reason.
+- **RPMac and `smccore.exe` could talk over each other**, corrupting readings when both ran at once. Both now take a named system-wide lock around each SMC transaction.
+
+### New
+
+- **Named temperature sensors on T2 Macs** — CPU cores, GPU memory, battery, NVMe and more now show readable names instead of raw keys. Contributed by @Kinkaliyov.
+- **Left-click the tray icon to open RPMac**, and a **Toggle Overlay** entry in the tray menu. The active preset and the overlay's state are now remembered across restarts. Contributed by @matthewyang204.
+- The InpOut32 driver source is now vendored in the repo, so everything RPMac ships can be built from source. Contributed by @matthewyang204.
+
+### Download
+Download `RPMac-v1.9.0-windows.zip` below, unzip it, and run **`RPMac.exe` as administrator**.
+Keep `RPMac.exe`, `RPMac.exe.config`, `smccore.exe` and `inpout32.dll` together in the same folder.
+
+> **If Windows blocks it:** RPMac isn't code-signed, so Windows doesn't recognise it yet. On **SmartScreen** choose *More info → Run anyway*; if **Smart App Control** blocks it the app just won't start, so either turn Smart App Control off in *Windows Security → App & browser control*, or build RPMac yourself from source. Some antivirus tools also flag the bundled **InpOut32** driver, which is what talks to the SMC — normal for any fan-control utility. The full source is in this repo.
+
+Read-only and safe on non-Apple hardware. License: GPL-2.0-only.
+
+---
+
+## RPMac v1.8.0
+
+**The other app capable of controlling fans on Intel Macs in Windows — for free.**
+
+### What's new in 1.8.0
+
+- **Emergency shutdown.** For a Mac left running unattended — a home server, an HTPC, anything nobody is sitting in front of. If the heat holds even with the fans already at maximum, RPMac now tells Windows to shut down cleanly, so programs close and memory is flushed to disk, instead of waiting for the CPU to cut power on its own at ~105°C. Suggested by @Mac-Apex.
+- **Fan-stall detection.** A dying fan can cook a machine long before any single sensor reaches a temperature limit. RPMac can now also shut down when a fan it is *telling to spin* keeps reading below a speed you set — something it can detect precisely because it knows both the commanded speed and the real one.
+- **It never acts on one reading.** Both triggers require the condition to hold for **30 seconds straight**; any normal reading in between resets the count. An invalid reading is never treated as 0 RPM, and a fan that is idle on purpose is never treated as stalled. Everything here is **off by default**, and the shutdown threshold is always kept above the emergency-cooling one.
+- **You can see why it happened.** Every shutdown RPMac starts is written to `shutdown.log` in `%APPDATA%\RPMac`, with the reason and the exact command. The command runs with a 30-second delay by default (`/s /f /t 30`), so `shutdown /a` cancels it. The arguments are editable in Settings; the program being run is fixed to Windows' own `shutdown.exe`.
+
+### Download
+Download `RPMac-v1.8.0-windows.zip` below, unzip it, and run **`RPMac.exe` as administrator**.
+Keep `RPMac.exe`, `RPMac.exe.config`, `smccore.exe` and `inpout32.dll` together in the same folder.
+
+> **If Windows blocks it:** RPMac isn't code-signed, so Windows doesn't recognise it yet. On **SmartScreen** choose *More info → Run anyway*; if **Smart App Control** blocks it the app just won't start, so either turn Smart App Control off in *Windows Security → App & browser control*, or build RPMac yourself from source. This is normal for any unsigned utility that talks to hardware — the full source is in this repo.
+
+Read-only and safe on non-Apple hardware. License: GPL-2.0-only.
+
+---
+
+## RPMac v1.7.0
+
+**The other app capable of controlling fans on Intel Macs in Windows — for free.**
+
+### What's new in 1.7.0
+- **Name your own sensors.** Some Macs expose temperature sensors RPMac has no name for — until now they only showed up in the raw list and couldn't be used for anything. On the **Sensors** page you can now give any of them a name, and it becomes a normal sensor straight away: usable in curves and "Highest temp", and available in the overlay, the tray icon and the CSV. No restart needed. Suggested by @Mac-Apex.
+- **Northbridge sensors added.** `TN0D` and `TN0P` are now recognised alongside `TN0H`. On Mac minis and MacBooks with the NVIDIA MCP79 chipset this is often the hottest part of the machine, so leaving it out meant "Highest temp" could miss the real hot spot. Reported by @Mac-Apex.
+- **A clearer message on T2 Macs.** RPMac used to tell T2 owners that `AppleT2Smc.bin` was missing, which sent people looking for a file that isn't published yet. It now says plainly that T2 support is written but waiting on its kernel module being signed.
+
+### Download
+Download `RPMac-v1.7.0-windows.zip` below, unzip it, and run **`RPMac.exe` as administrator**.
+Keep `RPMac.exe`, `RPMac.exe.config`, `smccore.exe` and `inpout32.dll` together in the same folder.
+
+---
+
+## RPMac v1.6.1
+
+**The other app capable of controlling fans on Intel Macs in Windows — for free.**
+
+### Fixed in 1.6.1
+- **Curve points can no longer cross each other.** Dragging a point past its neighbour left the curve going *down* as the temperature went *up* (e.g. `38°C → 860 RPM` sitting next to `40°C → 790 RPM`), which is never what you want from a fan and looked broken. Points now keep their order, stay at least 3°C apart, and can't be dragged below the point on their left or above the one on their right. Curves saved with a dip are straightened out when they're loaded.
+
+### Download
+Download `RPMac-v1.6.1-windows.zip` below, unzip it, and run **`RPMac.exe` as administrator**.
+Keep `RPMac.exe`, `RPMac.exe.config`, `smccore.exe` and `inpout32.dll` together in the same folder.
+
+---
+
+## RPMac v1.6.0
+
+**The other app capable of controlling fans on Intel Macs in Windows — for free.**
+
+### What's new in 1.6.0
+- **Curves with as many points as you want.** A curve is no longer a single straight ramp: **double-click the graph to add a point**, drag it anywhere, and **right-click a point to remove it**. That's what it takes to say "stay silent up to 55°, then ramp hard" — one straight line can't. Changes to an active curve apply immediately, without pressing Apply again.
+- **Smooth fan changes** (on by default). Temperatures wobble by a degree constantly, and a curve that follows every wobble makes the fan audibly hunt up and down. RPMac now ignores tiny changes, rises quickly when something really heats up, and eases back down slowly. Turn it off in Settings if you want the raw curve.
+- **Emergency cooling.** Set a temperature — if *any* sensor reaches it, every fan goes to maximum until the machine cools down, whatever mode each fan is in. A safety net so you can run a quiet curve without worrying.
+- **Copy a curve to all fans.** On Macs with several fans, set one up and hand the same shape to the rest — the RPM values are rescaled to each fan's own range.
+- **Record to a CSV file.** Append every reading to `history.csv` so you can look back at what ran hot during a game or a long render.
+
+Existing curves are read as before and converted automatically; nothing is lost when you update.
+
+### Download
+Download `RPMac-v1.6.0-windows.zip` below, unzip it, and run **`RPMac.exe` as administrator**.
+Keep `RPMac.exe`, `RPMac.exe.config`, `smccore.exe` and `inpout32.dll` together in the same folder.
+
+---
+
+## RPMac v1.5.1
+
+**The other app capable of controlling fans on Intel Macs in Windows — for free.**
+
+### Fixed in 1.5.1
+- **The minimize and close buttons work again.** In 1.5.0's new title bar, pressing either button started a window drag instead, which swallowed the click — so the buttons appeared dead and the only ways out were the tray icon or Alt+F4. They now respond normally (close still hides RPMac to the tray, as it always has; quit from the tray menu). Dragging the window by the title bar is unaffected.
+
+### Download
+Download `RPMac-v1.5.1-windows.zip` below, unzip it, and run **`RPMac.exe` as administrator**.
+Keep `RPMac.exe`, `RPMac.exe.config`, `smccore.exe` and `inpout32.dll` together in the same folder.
+
+---
+
+## RPMac v1.5.0
+
+**The other app capable of controlling fans on Intel Macs in Windows — for free.**
+
+A full redesign of the interface, and the curve editor RPMac always should have had.
+
+### What's new in 1.5.0
+- **Graphical curve editor.** The temperature curve is now a real chart you edit by **dragging its points**, instead of four sliders you had to imagine the result of. A **live dot** rides the curve showing exactly where the fan is running right now, and the axes label themselves in °C or °F.
+- **5-minute history graph.** A live chart of the hottest sensor and the fan speed, so you can actually see what your Mac is doing over time.
+- **Redesigned interface.** RPMac now has its own window chrome with a live temperature readout, an icon sidebar (**Fans · Sensors · Presets · Settings**) instead of one endless scrolling page, and a proper app icon. Sensors are grouped by CPU / GPU / system with their raw SMC keys, and values turn amber and then red as they get hot.
+- **Fan names from the SMC.** If your Mac reports a name for a fan (e.g. *EXHAUST*, *MAIN*), RPMac shows it, along with the fan's RPM range and a marker for the target speed on the speed bar.
+- Live temperatures stay visible next to the fan controls while you tune them.
+
+### Download
+Download `RPMac-v1.5.0-windows.zip` below, unzip it, and run **`RPMac.exe` as administrator**.
+Keep `RPMac.exe`, `RPMac.exe.config`, `smccore.exe` and `inpout32.dll` together in the same folder.
+
+> **If Windows blocks it:** RPMac isn't code-signed, so Windows doesn't recognise it yet. On **SmartScreen** choose *More info → Run anyway*; if **Smart App Control** blocks it the app just won't start, so either turn Smart App Control off or build RPMac yourself from source. This is normal for any unsigned utility that talks to hardware — the full source is in the repo.
+
+---
+
+## RPMac v1.4.1
+
+**The other app capable of controlling fans on Intel Macs in Windows — for free.**
+
+### Fixed in 1.4.1
+- **Themes now switch correctly again.** Selecting a theme (Dark / Light / Nature / Japan) only changed the background — the accent color, controls and the highlighted button were left on the previous theme, so switching looked half-applied. The whole UI now recolors instantly and completely, and the selected theme is highlighted properly.
+- **Sliders, the scrollbar and the selected buttons now follow the theme too.** They were hardcoded to the dark palette, so they looked out of place in the light themes (an invisible slider handle on a white background, dark tracks, low-contrast button text). They now match every theme.
+
+### New in 1.4.1
+- **Curve on the hottest sensor.** The per-fan temperature curve has a new sensor option, **"Highest temp (any sensor)"**, which drives the fan from whichever sensor is currently hottest instead of a single fixed one — so the fan ramps up when *either* the CPU or the GPU gets hot. Useful on iMacs where the GPU is often the hottest part but the CPU can spike on its own. Requested by @Bibihi98.
+- **iMac17,1 confirmed working.** The iMac (Retina 5K, 27-inch, Late 2015) is now a verified model — fan control and temperature sensors both work. Thanks to @Bibihi98 for the report.
+
+### Download
+Download `RPMac-v1.4.1-windows.zip` below, unzip it, and run **`RPMac.exe` as administrator**.
+Keep `RPMac.exe`, `RPMac.exe.config`, `smccore.exe` and `inpout32.dll` together in the same folder.
+
+---
+
+## RPMac v1.4.0
+
+**The other app capable of controlling fans on Intel Macs in Windows — for free.**
+
+### What's new in 1.4.0
+- **Temperature in the system tray.** The tray icon can now show a live temperature — the highest sensor, or a specific one — as seven-segment digits, instead of (or as well as) the app icon. Pick it in **Settings → "Show in tray"** (App Icon / None / Highest Temp / a specific sensor). Contributed by VladislavEkimtcov.
+- **Fixed: RPMac now launches at startup on battery.** The "Start with Windows" task was created with Windows' default *"start only if on AC power"* condition, so on laptops it wouldn't launch at logon while on battery. The task now allows running on battery. Reported by hooshmandd700.
+- **Fixed a tray-icon handle leak** that could make the app run out of Windows handles and crash after a few hours in temperature-tray mode. Contributed by VladislavEkimtcov.
+
+### Download
+Download `RPMac-v1.4.0-windows.zip` below, unzip it, and run **`RPMac.exe` as administrator**.
+Keep `RPMac.exe`, `RPMac.exe.config`, `smccore.exe` and `inpout32.dll` together in the same folder.
+
+---
+
+## RPMac v1.3.2
+
+**The other app capable of controlling fans on Intel Macs in Windows — for free.**
+
+### Fixed in 1.3.2
+- **Hardened startup so it can't silently die.** Some machines reported RPMac flashing and closing on the next launch when a saved `config.txt` was present (with nothing written to the error log). The startup path is now fully isolated step-by-step, and **corrupted-state / native exceptions** (e.g. from the low-level I/O driver while re-applying the saved config) are now caught and logged instead of killing the process. Any startup problem is written to `%APPDATA%\RPMac\error.log`. If it still happens, that log now pinpoints the exact cause.
+- Fixed the manual build command in the README — it was missing `System.Windows.Forms` and `System.Drawing` (needed by the tray icon) — and documented `build.bat`. Thanks to @I-Love-Potatoes for both findings.
+
+### Download
+Download `RPMac-v1.3.2-windows.zip` below, unzip it, and run **`RPMac.exe` as administrator**.
+Keep `RPMac.exe`, `RPMac.exe.config`, `smccore.exe` and `inpout32.dll` together in the same folder.
+
+---
+
+## RPMac v1.3.1
+
+**The other app capable of controlling fans on Intel Macs in Windows — for free.**
+
+### Fixed in 1.3.1
+- **Fixed RPMac becoming unreachable after a restart** — the window would flash and close while the process kept running (fans still spinning), with no way to get the GUI back. RPMac is now **single-instance**: launching it again brings the already-running window to the front instead of starting a hidden duplicate that fights over the SMC. Also added a tray fallback (it minimizes instead of vanishing if the tray icon can't be created) and writes any startup error to `%APPDATA%\RPMac\error.log`. Thanks to the reporter for the detailed video.
+
+### Download
+Download `RPMac-v1.3.1-windows.zip` below, unzip it, and run **`RPMac.exe` as administrator**.
+Keep `RPMac.exe`, `smccore.exe` and `inpout32.dll` together in the same folder.
+
+---
+
+## RPMac v1.3.0
+
+**The other app capable of controlling fans on Intel Macs in Windows — for free.**
+
+### What's new in 1.3.0
+- **Presets (profiles).** Save your current fan setup as a named profile — e.g. "Silent", "Gaming", "Max" — and switch between them with one click. Each profile stores every fan's mode (Auto/Max/Manual/Curve) and its parameters. Apply them from the app or straight from the **tray icon** (right-click → Presets), without opening the window. The active profile is highlighted, and each shows a summary of what it does.
+- Overlay now re-asserts always-on-top each refresh, so it stays above games running in **borderless / windowed** mode (exclusive-fullscreen still can't be drawn over by any window overlay).
+
+### Download
+Download `RPMac-v1.3.0-windows.zip` below, unzip it, and run **`RPMac.exe` as administrator**.
+Keep `RPMac.exe`, `smccore.exe` and `inpout32.dll` together in the same folder.
+
+---
+
+## RPMac v1.2.0
+
+**The other app capable of controlling fans on Intel Macs in Windows — for free.**
+
+### What's new in 1.2.0
+- **Per-fan temperature curve.** Each fan now has a **Curve** mode: pick a temperature sensor, set a min and max temperature and a min and max RPM, and the fan ramps linearly between them — below the min temp it runs at min RPM, above the max temp at max RPM. Works independently per fan, so multi-fan Macs can curve each one separately.
+- **Command-line tool (`smccore.exe`)** for scripting and automation, now with **per-fan** control:
+  - `smccore.exe list | temps` — read fans / sensors
+  - `smccore.exe auto [fan] | max [fan] | set [fan] <rpm>` — control all fans, or one fan by number
+  - RPM values are clamped to each fan's own min/max; read-only on non-Apple hardware.
+- Fixed the build script and bundled `smccore.exe` alongside `RPMac.exe`.
+
+### Download
+Download `RPMac-v1.2.0-windows.zip` below, unzip it, and run **`RPMac.exe` as administrator**.
+Keep `RPMac.exe`, `smccore.exe` and `inpout32.dll` together in the same folder.
+
+---
+
+## RPMac v1.1.1
+
+**The other app capable of controlling fans on Intel Macs in Windows — for free.**
+
+### What's fixed in 1.1.1
+- **Corrected CPU sensor labeling.** `TC0P` was labeled "CPU", but it's a socket-**proximity** sensor that reads hotter than the actual core — on some Macs it can show ~105°C while the real die temp is lower. It's now labeled **"CPU (proximity)"**, and **`TC0D` "CPU (die)"** is surfaced as the true per-core reading. Reported on a dual-CPU Mac Pro.
+
+### Download
+Download `RPMac-v1.1.1-windows.zip` below, unzip it, and run **`RPMac.exe` as administrator**.
+Keep `RPMac.exe` and `inpout32.dll` together in the same folder.
+
+---
+
+## RPMac v1.1.0
+
+**The other app capable of controlling fans on Intel Macs in Windows — for free.**
+
+### What's new in 1.1.0
+- **On-screen overlay (FRAPS-style):** always-on-top, click-through, pinned to the top-right corner. Choose **vertical or horizontal (compact)** layout and **select which fans/sensors** to show.
+- **Themes:** Dark / Light / Nature / Japan, applied instantly (the Windows title bar follows the theme too).
+- **Temperatures in °C or °F** with a single toggle.
+- **Re-applies your fan settings after sleep/resume** (the SMC drops forced mode on resume, so fans no longer silently revert to auto).
+- Performance: SMC key info is cached to roughly halve SMC traffic per refresh.
+
+### Download
+Download `RPMac-v1.1.0-windows.zip` below, unzip it, and run **`RPMac.exe` as administrator**.
+Keep `RPMac.exe` and `inpout32.dll` together in the same folder.
+
+---
+
+## RPMac v1.0.0
+
+**The other app capable of controlling fans on Intel Macs in Windows — for free.**
+
+A free, open-source, lightweight alternative for controlling Mac fans from Windows (Boot Camp).
+
+### Download
+Download `RPMac-v1.0.0-windows.zip` below, unzip it, and run **`RPMac.exe` as administrator**.
+Keep `RPMac.exe` and `inpout32.dll` together in the same folder.
+
+### Requirements
+- An Intel Mac running Windows (Boot Camp)
+- Administrator rights
+
+### Features
+- Real-time fan RPM and temperature monitoring
+- Per-fan control: Auto / Max / custom RPM
+- Curated temperature sensors (plus a raw view of every key)
+- Remembers your last setting and re-applies it on launch
+- Start with Windows + start minimized to the system tray
+- Modern dark UI, nothing extra to install
+- Safety first: stays read-only on non-Apple hardware and never disables the SMC's thermal protection
+
+### Antivirus note
+RPMac bundles **InpOut32**, a low-level I/O driver used to talk to the Mac's SMC. Some antivirus products flag this kind of driver as "potentially unwanted" because it grants hardware access. This is **normal for fan-control utilities** — the full source is in this repository. Allow it if your AV blocks it.
+
+### Compatibility
+- **Verified on:** Mac Pro (Late 2013, `MacPro6,1`).
+- **Intel Macs up to ~2017 (pre-T2):** should work — same SMC interface — but untested on each model.
+- **Intel Macs with T2 (2018-2020):** not verified; the `flt` data format is implemented but unconfirmed.
+- **Apple Silicon (M1+):** not supported (no Boot Camp).
+
+It has only been tested on one machine, so **reports from other Intel Macs are very welcome** — see the README's "Help us test it" section.
+
+License: **GPL-2.0-only**. Provided as is, without warranty — use at your own risk.
